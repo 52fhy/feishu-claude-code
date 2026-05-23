@@ -1005,19 +1005,12 @@ def main():
     print(f"   默认模型    : {config.DEFAULT_MODEL}")
     print(f"   默认工作目录: {config.DEFAULT_CWD}")
     print(f"   权限模式    : {config.PERMISSION_MODE}")
-
-    # 卡片回调 HTTP 服务 + ngrok 隧道
-    cb_port = config.CALLBACK_PORT
-    _start_callback_server(cb_port)
-    ngrok_url = _start_ngrok(cb_port)
-    if ngrok_url:
-        print(f"   卡片回调    : {ngrok_url}/callback")
-    else:
-        print(f"   卡片回调    : http://localhost:{cb_port}/callback (需启动 ngrok)")
+    print(f"   卡片回调    : ✅ 长连接支持（无需HTTP/ngrok）")
 
     handler = lark.EventDispatcherHandler.builder("", "") \
         .register_p2_im_message_receive_v1(on_message_receive) \
         .register_p2_card_action_trigger(on_card_action) \
+        .register_p2_im_message_message_read_v1(lambda data: None) \
         .build()
 
     ws_client = lark.ws.Client(
